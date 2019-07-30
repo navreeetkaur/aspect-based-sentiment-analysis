@@ -13,12 +13,16 @@ To come up with such an aspect-sentiment table for a product:
 ## Model
 
 Our model is implemented in two stages: 
-(1) Aspect Extraction
-(2) Aspect Categorization and Sentiment Analysis
+1. Aspect Extraction
+2. Aspect Categorization and Sentiment Analysis
 
-Given a review, we summarize it by outputting polarities of particular fixed aspects. For example, for this review:
+Given a review, we summarize it by outputting polarities of particular fixed aspects. 
+For example, for this review:
+
 ```It’s a nice place to relax and have conversation..But the food was okay, nothing great```, 
-the model should output 
+
+the model should output
+
 ```{AMBIENCE: Positive, FOOD: Negative, SER- VICE: Neutral}```
 
 ## Environment
@@ -31,36 +35,39 @@ Step 1: Download general embeddings (GloVe: http://nlp.stanford.edu/data/glove.8
 
 Step 2: Download Domain Embeddings (You can find the link under this paper's title in https://www.cs.uic.edu/~hxu/ ), save them in data/embedding
 
-Step 3:
-Download and install fastText (https://github.com/facebookresearch/fastText) to fastText/
+Step 3: Download and install fastText (https://github.com/facebookresearch/fastText) to fastText/
 
-Step 4: 
-Download official datasets to data/official_data/
+Step 4: Download official datasets to data/official_data/
+
 Download official evaluation scripts to script/
 
 We assume the following file names:
 
 SemEval 2014 Laptop (http://alt.qcri.org/semeval2014/task4/):
+
 data/official_data/Laptops_Test_Data_PhaseA.xml
+
 data/official_data/Laptops_Test_Gold.xml
 
 SemEval 2016 Restaurant (http://alt.qcri.org/semeval2016/task5/)
+
 data/official_data/EN_REST_SB1_TEST.xml.A
+
 data/official_data/EN_REST_SB1_TEST.xml.gold
 
 ### Improving SOTA of Aspect Detection
 
 1. To improve quality of embeddings
-- Using ELMO trained on the in-domain data to improve fastText embeddings
+    - Using ELMO trained on the in-domain data to improve fastText embeddings
 
 2. Architectural Changes
-- Using LSTMs in the penultimate layer
-    Loss decreasing, but f-1 score also decreasing
-- Using GRU in final layer
-    Similar results as the baseline model
-- Using CRF instead of softmax
-    Slightly worse performance
-- Tried various pooling functions in the baseline CNN model
+    - Using LSTMs in the penultimate layer
+        - Loss decreasing, but f-1 score also decreasing
+    - Using GRU in final layer
+        - Similar results as the baseline model
+    - Using CRF instead of softmax
+        - Slightly worse performance
+    - Tried various pooling functions in the baseline CNN model
 
 ### Assigning Sentiment to Extracted Aspects
 
@@ -68,8 +75,8 @@ data/official_data/EN_REST_SB1_TEST.xml.gold
 2. Have to look for the correct modifier words / sentence chunks (not always adjectival)
 3. Came up with a rule-based system based on dependency parse trees 
 4. Used vader sentiment
-   Outputs a polarity score for sentence as a whole
-   Eg: The pizza was good but the paneer sucked.
+   - Outputs a polarity score for sentence as a whole
+   - Eg: The pizza was good but the paneer sucked.
    ![Dependency Parse](https://raw.githubusercontent.com/navreeetkaur/aspect-based-sentiment-analysis/master/parse.png)
    
 ### Categorisation of Aspect words
@@ -77,8 +84,8 @@ data/official_data/EN_REST_SB1_TEST.xml.gold
 - We used a concatenation of general-purpose and domain-specific embeddings and tried to cluster them using kmeans, dbscan, optics
 - Tried semi-supervised clustering by providing seeds to kmeans
 - For aspects that were phrases:
-    Tried max, sum, avg of constituent word vectors
-    Tried normalizing the word vectors
+    - Tried max, sum, avg of constituent word vectors
+    - Tried normalizing the word vectors
 
 Evaluation Metric: Qualitative observation of the clusters
 
@@ -94,10 +101,10 @@ Observations:
 
 ## Citation
 
-@InProceedings{xu_acl2018,
+```@InProceedings{xu_acl2018,
   author    = {Xu, Hu and Liu, Bing and Shu, Lei and Yu, Philip S.},
   title     = {Double Embeddings and CNN-based Sequence Labeling for Aspect Extraction},
   booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics},
   publisher = {Association for Computational Linguistics},
   year      = {2018}
-}
+}```

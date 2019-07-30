@@ -7,6 +7,7 @@ Our work aims to provide a framework to decompose the review score into various 
 
 ### Goal
 To come up with such an aspect-sentiment table for a product:
+
 ![Source: SemEval 2016 Task 5](http://alt.qcri.org/semeval2016/task5/data/uploads/macminitable.png)
 
 ## Model
@@ -15,7 +16,10 @@ Our model is implemented in two stages:
 (1) Aspect Extraction
 (2) Aspect Categorization and Sentiment Analysis
 
-Given a review, we summarize it by outputting polarities of particular fixed aspects. For example, for this review: ```It’s a nice place to relax and have conversation..But the food was okay, nothing great```, the model should output ```{AMBIENCE: Positive, FOOD: Negative, SER- VICE: Neutral}```
+Given a review, we summarize it by outputting polarities of particular fixed aspects. For example, for this review:
+```It’s a nice place to relax and have conversation..But the food was okay, nothing great```, 
+the model should output 
+```{AMBIENCE: Positive, FOOD: Negative, SER- VICE: Neutral}```
 
 ## Environment
 
@@ -83,7 +87,9 @@ Observations:
 - Avg -> reduced cluster quality 
 - Normalizing and element-wise max of embeddings improved cluster quality
 
-### ![Visualizing the formed clusters - tSNE plot] (https://drive.google.com/file/d/1gtOkl4_mJRqj2QYQnR6DirdElSd-LxYP/view?usp=sharing)
+### Visualizing the formed clusters - tSNE plot
+
+![](https://drive.google.com/file/d/1gtOkl4_mJRqj2QYQnR6DirdElSd-LxYP/view?usp=sharing)
 
 
 ## Citation

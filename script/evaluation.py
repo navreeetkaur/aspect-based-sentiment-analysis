@@ -7,11 +7,12 @@ import math
 import random
 import xml.etree.ElementTree as ET
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 np.random.seed(1337)
 random.seed(1337)
 torch.manual_seed(1337)
-torch.cuda.manual_seed(1337)
+# torch.cuda.manual_seed(1337)
 
 class Model(torch.nn.Module):
     def __init__(self, gen_emb, domain_emb, num_classes=3, dropout=0.5, crf=False):
@@ -194,8 +195,10 @@ def test(model, test_X, raw_X, domain, command, template, batch_size=128, crf=Fa
         batch_test_X_len=batch_test_X_len[batch_idx]
         batch_test_X_mask=(test_X[offset:offset+batch_size]!=0)[batch_idx].astype(np.uint8)
         batch_test_X=test_X[offset:offset+batch_size][batch_idx]
-        batch_test_X_mask=torch.autograd.Variable(torch.from_numpy(batch_test_X_mask).long().cuda() )
-        batch_test_X = torch.autograd.Variable(torch.from_numpy(batch_test_X).long().cuda() )
+        # batch_test_X_mask=torch.autograd.Variable(torch.from_numpy(batch_test_X_mask).long().cuda() )
+        batch_test_X_mask=torch.autograd.Variable(torch.from_numpy(batch_test_X_mask).long())
+        # batch_test_X = torch.autograd.Variable(torch.from_numpy(batch_test_X).long().cuda() )
+        batch_test_X = torch.autograd.Variable(torch.from_numpy(batch_test_X).long())
         batch_pred_y=model(batch_test_X, batch_test_X_len, batch_test_X_mask, testing=True)
         r_idx=batch_idx.argsort()
         if crf:
@@ -210,14 +213,19 @@ def test(model, test_X, raw_X, domain, command, template, batch_size=128, crf=Fa
     assert len(pred_y)==len(test_X)
     
     command=command.split()
+    print("COMMAND: ")
+    print(command)
     if domain=='restaurant':
-        label_rest_xml(template, command[6], raw_X, pred_y)
+        label_rest_xml(template, command[8], raw_X, pred_y)
         acc=check_output(command ).split()
         print(acc)
         return float(acc[9][10:])
     elif domain=='laptop':
-        label_laptop_xml(template, command[4], raw_X, pred_y)
-        acc=check_output(command ).split()
+        label_laptop_xml(template, command[6], raw_X, pred_y)
+        try:
+            acc=check_output(command).split()
+        except CalledProcessError as e:
+            print(e.output)
         print(acc)
         return float(acc[15])
 
@@ -234,18 +242,18 @@ def evaluate(runs, data_dir, model_dir, domain, command, template):
 
 if __name__ == "__main__":    
     parser = argparse.ArgumentParser()
-    parser.add_argument('--runs', type=int, default=5)
-    parser.add_argument('--data_dir', type=str, default="data/prep_data/")
-    parser.add_argument('--model_dir', type=str, default="model/")
+    parser.add_argument('--runs', type=int, default=2)
+    parser.add_argument('--data_dir', type=str, default="/sem8/COL772-NLP/DE-CNN/data/prep_data/")
+    parser.add_argument('--model_dir', type=str, default="/sem8/COL772-NLP/DE-CNN/script/model/")
     parser.add_argument('--domain', type=str, default="laptop")
 
     args = parser.parse_args()
 
     if args.domain=='restaurant':
-        command="java -cp script/A.jar absa16.Do Eval -prd data/official_data/pred.xml -gld data/official_data/EN_REST_SB1_TEST.xml.gold -evs 2 -phs A -sbt SB1"
-        template="data/official_data/EN_REST_SB1_TEST.xml.A"
+        command="java --add-modules java.xml.bind -cp /sem8/COL772-NLP/DE-CNN/script/A.jar absa16.Do Eval -prd /sem8/COL772-NLP/DE-CNN/data/official_data/pred.xml -gld /sem8/COL772-NLP/DE-CNN/data/official_data/EN_REST_SB1_TEST.xml.gold -evs 2 -phs A -sbt SB1"
+        template="/sem8/COL772-NLP/DE-CNN/data/official_data/EN_REST_SB1_TEST.xml.A"
     elif args.domain=='laptop':
-        command="java -cp script/eval.jar Main.Aspects data/official_data/pred.xml data/official_data/Laptops_Test_Gold.xml"
-        template="data/official_data/Laptops_Test_Data_PhaseA.xml"
+        command="java --add-modules java.xml.bind -cp /sem8/COL772-NLP/DE-CNN/script/eval.jar Main.Aspects /sem8/COL772-NLP/DE-CNN/data/official_data/pred.xml /sem8/COL772-NLP/DE-CNN/data/official_data/Laptops_Test_Gold.xml"
+        template="/sem8/COL772-NLP/DE-CNN/data/official_data/Laptops_Test_Data_PhaseA.xml"
 
     evaluate(args.runs, args.data_dir, args.model_dir, args.domain, command, template)

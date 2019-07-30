@@ -70,7 +70,7 @@ data/official_data/EN_REST_SB1_TEST.xml.gold
 4. Used vader sentiment
    Outputs a polarity score for sentence as a whole
    Eg: The pizza was good but the paneer sucked.
-   ![Dependency Parse](https://drive.google.com/file/d/1aY7Vkk-xTgCONLiduqyS1vslrxQEinHJ/view?usp=sharing)
+   ![Dependency Parse](https://raw.githubusercontent.com/navreeetkaur/aspect-based-sentiment-analysis/master/parse.png)
    
 ### Categorisation of Aspect words
 
@@ -89,7 +89,7 @@ Observations:
 
 ### Visualizing the formed clusters - tSNE plot
 
-![tSNE plot](https://drive.google.com/file/d/1gtOkl4_mJRqj2QYQnR6DirdElSd-LxYP/view?usp=sharing)
+![tSNE plot](https://raw.githubusercontent.com/navreeetkaur/aspect-based-sentiment-analysis/master/tsne.png)
 
 
 ## Citation
